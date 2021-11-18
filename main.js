@@ -12,8 +12,10 @@ const sync = async () => {
 
   const accounts = await getInvestecAccounts(token);
   console.log("got accounts from investec");
-  // const todayIsoString = new Date().toISOString().split("T")[0];
-  const todayIsoString = "2021-11-15";
+  const todayIsoString = new Date().toISOString().split("T")[0];
+  const twoDaysAgoIsoString = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
 
   const ynabTransactions = [];
   for (const acc of accounts) {
@@ -21,7 +23,7 @@ const sync = async () => {
     const transactions = await getInvestecTransactionsForAccount(
       token,
       acc.accountId,
-      todayIsoString,
+      twoDaysAgoIsoString,
       todayIsoString
     );
     ynabTransactions.push(
