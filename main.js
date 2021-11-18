@@ -1,51 +1,31 @@
-import fetch from "node-fetch";
+import {
+  getInvestecToken,
+  getInvestecAccounts,
+  getInvestecTransactionsForAccount,
+} from "./investec.js";
+import { sendTransactionsToYnab } from "./ynab.js";
 
 const sync = async () => {
   console.log("signing in to investec...");
-  const tokenResponse = await fetch(
-    "https://openapi.investec.com/identity/v2/oauth2/token",
-    {
-      method: "POST",
-      body:
-        "grant_type=client_credentials&client_id=" +
-        process.env.INVESTEC_API_ID +
-        "&client_secret=" +
-        process.env.INVESTEC_API_SECRET,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
-
-  const tokenJson = await tokenResponse.json();
-  const token = tokenJson.access_token;
-  const basicHeaders = { Authorization: `Bearer ${token}` };
+  const token = await getInvestecToken();
   console.log("received token from investec, fetching accounts...");
-  const accounts = await (
-    await fetch(`https://openapi.investec.com/za/pb/v1/accounts`, {
-      headers: {
-        ...basicHeaders,
-      },
-    })
-  ).json();
-  console.log("got account from investec");
-  const todayIsoString = new Date().toISOString().split("T")[0];
+
+  const accounts = await getInvestecAccounts(token);
+  console.log("got accounts from investec");
+  // const todayIsoString = new Date().toISOString().split("T")[0];
+  const todayIsoString = "2021-11-15";
 
   const ynabTransactions = [];
-  for (const acc of accounts.data.accounts) {
+  for (const acc of accounts) {
     console.log("fetching transactions for account", acc.accountId);
-    const transactions = await (
-      await fetch(
-        `https://openapi.investec.com/za/pb/v1/accounts/${acc.accountId}/transactions?fromDate=${todayIsoString}&toDate=${todayIsoString}`,
-        {
-          headers: {
-            ...basicHeaders,
-          },
-        }
-      )
-    ).json();
+    const transactions = await getInvestecTransactionsForAccount(
+      token,
+      acc.accountId,
+      todayIsoString,
+      todayIsoString
+    );
     ynabTransactions.push(
-      ...transactions.data.transactions.map((t) => ({
+      ...transactions.map((t) => ({
         account_id: process.env[acc.accountId],
         date: t.transactionDate,
         amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
@@ -63,20 +43,7 @@ const sync = async () => {
     return;
   }
   console.log("sending transactions to ynab", ynabTransactions);
-  const ynabResponse = await (
-    await fetch(
-      `https://api.youneedabudget.com/v1/budgets/${process.env.YNAB_BUDGET_ID}/transactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.YNAB_PAT}`,
-        },
-        body: JSON.stringify({ transactions: ynabTransactions }),
-      }
-    )
-  ).json();
-
+  const ynabResponse = await sendTransactionsToYnab(ynabTransactions);
   console.log(ynabResponse);
 };
 
