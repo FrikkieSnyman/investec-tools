@@ -6,6 +6,7 @@ import {
 import { sendTransactionsToYnab } from "./ynab.js";
 
 const sync = async () => {
+  console.log(process.env);
   console.log("signing in to investec...");
   const token = await getInvestecToken();
   console.log("received token from investec, fetching accounts...");
