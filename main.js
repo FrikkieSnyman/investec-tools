@@ -6,7 +6,6 @@ import {
 import { sendTransactionsToYnab } from "./ynab.js";
 
 const sync = async () => {
-  console.log(process.env);
   console.log("signing in to investec...");
   const token = await getInvestecToken();
   console.log("received token from investec, fetching accounts...");
@@ -29,7 +28,7 @@ const sync = async () => {
     );
     ynabTransactions.push(
       ...transactions.map((t) => ({
-        account_id: process.env[acc.accountId],
+        account_id: process.env[`i${acc.accountId}`],
         date: t.transactionDate,
         amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
         payee_name: t.description.slice(0, 50),

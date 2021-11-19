@@ -16,3 +16,34 @@ export const sendTransactionsToYnab = async (transactions) => {
 
   return ynabResponse;
 };
+
+export const getYnabBudgets = async () => {
+  const ynabResponse = await (
+    await fetch(`https://api.youneedabudget.com/v1/budgets`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.YNAB_PAT}`,
+      },
+    })
+  ).json();
+
+  return ynabResponse;
+};
+
+export const getYnabAccounts = async (budgetId) => {
+  const ynabResponse = await (
+    await fetch(
+      `https://api.youneedabudget.com/v1/budgets/${budgetId}/accounts`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.YNAB_PAT}`,
+        },
+      }
+    )
+  ).json();
+
+  return ynabResponse;
+};

@@ -14,7 +14,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node -r dotenv/config ./main.js"
+    "start": "node -r dotenv/config ./main.js",
+    "listAccounts": "node -r dotenv/config ./listAccounts.js"
   },
   "author": "",
   "license": "ISC"
