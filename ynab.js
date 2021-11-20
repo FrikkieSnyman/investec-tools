@@ -1,14 +1,15 @@
 import fetch from "node-fetch";
+const getBasicHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${process.env.YNAB_PAT}`,
+});
 export const sendTransactionsToYnab = async (transactions) => {
   const ynabResponse = await (
     await fetch(
       `https://api.youneedabudget.com/v1/budgets/${process.env.YNAB_BUDGET_ID}/transactions`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.YNAB_PAT}`,
-        },
+        headers: { ...getBasicHeaders() },
         body: JSON.stringify({ transactions }),
       }
     )
@@ -37,10 +38,7 @@ export const getYnabAccounts = async (budgetId) => {
       `https://api.youneedabudget.com/v1/budgets/${budgetId}/accounts`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.YNAB_PAT}`,
-        },
+        headers: { ...getBasicHeaders() },
       }
     )
   ).json();
