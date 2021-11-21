@@ -23,8 +23,7 @@ export const getYnabBudgets = async () => {
     await fetch(`https://api.youneedabudget.com/v1/budgets`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.YNAB_PAT}`,
+        ...getBasicHeaders(),
       },
     })
   ).json();
