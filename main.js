@@ -1,16 +1,15 @@
-import {
-  getInvestecToken,
-  getInvestecAccounts,
-  getInvestecTransactionsForAccount,
-} from "./investec.js";
+import { Client } from "investec-api";
 import { sendTransactionsToYnab } from "./ynab.js";
 
 const sync = async () => {
   console.log("signing in to investec...");
-  const token = await getInvestecToken();
+  const client = await Client.create(
+    process.env.INVESTEC_API_ID,
+    process.env.INVESTEC_API_SECRET
+  );
   console.log("received token from investec, fetching accounts...");
 
-  const accounts = await getInvestecAccounts(token);
+  const accounts = await client.getAccounts();
   console.log("got accounts from investec");
   const todayIsoString = new Date().toISOString().split("T")[0];
   const twoDaysAgoIsoString = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
@@ -20,12 +19,10 @@ const sync = async () => {
   const ynabTransactions = [];
   for (const acc of accounts) {
     console.log("fetching transactions for account", acc.accountId);
-    const transactions = await getInvestecTransactionsForAccount(
-      token,
-      acc.accountId,
-      twoDaysAgoIsoString,
-      todayIsoString
-    );
+    const transactions = await acc.getTransactions({
+      fromDate: twoDaysAgoIsoString,
+      toDate: todayIsoString,
+    });
     ynabTransactions.push(
       ...transactions.map((t) => ({
         account_id: process.env[`i${acc.accountId}`],

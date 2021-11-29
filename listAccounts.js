@@ -1,11 +1,14 @@
-import { getInvestecAccounts, getInvestecToken } from "./investec.js";
+import { Client } from "investec-api";
 import { getYnabAccounts, getYnabBudgets } from "./ynab.js";
 
 const list = async () => {
   console.log("logging in to investec...");
-  const token = await getInvestecToken();
+  const client = await Client.create(
+    process.env.INVESTEC_API_ID,
+    process.env.INVESTEC_API_SECRET
+  );
   console.log("getting investec accounts");
-  const investecAccounts = await getInvestecAccounts(token);
+  const investecAccounts = await client.getAccounts();
 
   console.log("getting ynab budgets");
   const ynabBudgets = await getYnabBudgets();
