@@ -10,9 +10,7 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "investec-api": "^1.0.6",
-    "node-fetch": "2"
-  },
-  "devDependencies": {
+    "node-fetch": "2",
     "@types/node": "^16.11.11",
     "@types/node-fetch": "2",
     "typescript": "^4.5.2"
