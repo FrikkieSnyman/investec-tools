@@ -2,6 +2,10 @@ import { Client } from "investec-api";
 import { getYnabAccounts, getYnabBudgets } from "./ynab.js";
 
 const list = async () => {
+  if (!process.env.INVESTEC_API_ID || !process.env.INVESTEC_API_SECRET) {
+    console.error("missing environment variables");
+    return;
+  }
   console.log("logging in to investec...");
   const client = await Client.create(
     process.env.INVESTEC_API_ID,
@@ -14,7 +18,8 @@ const list = async () => {
   const ynabBudgets = await getYnabBudgets();
 
   console.log("getting ynab accounts");
-  const ynabAccounts = {};
+  const ynabAccounts: { [key in string]: Array<{ id: string; name: string }> } =
+    {};
   for (const budget of ynabBudgets.data.budgets) {
     const accounts = await getYnabAccounts(budget.id);
     ynabAccounts[budget.id] = accounts.data.accounts.map((a) => ({
@@ -30,4 +35,4 @@ const list = async () => {
   console.log(JSON.stringify(ynabAccounts, null, 2));
 };
 
-list().then("done");
+list().then(() => console.log("done"));

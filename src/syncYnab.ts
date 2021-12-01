@@ -1,7 +1,12 @@
 import { Client } from "investec-api";
-import { sendTransactionsToYnab } from "./ynab.js";
+import { YNABTransaction } from "./model";
+import { sendTransactionsToYnab } from "./ynab";
 
 const sync = async () => {
+  if (!process.env.INVESTEC_API_ID || !process.env.INVESTEC_API_SECRET) {
+    console.error("missing environment variables");
+    return;
+  }
   console.log("signing in to investec...");
   const client = await Client.create(
     process.env.INVESTEC_API_ID,
@@ -16,23 +21,27 @@ const sync = async () => {
     .toISOString()
     .split("T")[0];
 
-  const ynabTransactions = [];
+  const ynabTransactions: YNABTransaction[] = [];
   for (const acc of accounts) {
     console.log("fetching transactions for account", acc.accountId);
     const transactions = await acc.getTransactions({
       fromDate: twoDaysAgoIsoString,
       toDate: todayIsoString,
     });
+    if (!process.env[`i${acc.accountId}`]) {
+      console.error("missing account from map", { accountId: acc.accountId });
+      continue;
+    }
     ynabTransactions.push(
       ...transactions.map((t) => ({
-        account_id: process.env[`i${acc.accountId}`],
+        account_id: process.env[`i${acc.accountId}`]!,
         date: t.transactionDate,
         amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
         payee_name: t.description.slice(0, 50),
         import_id: `${(t.type === "DEBIT" ? -1 : 1) * t.amount * 1000}:${
           t.transactionDate
         }:${t.postedOrder}`,
-        cleared: "cleared",
+        cleared: "cleared" as "cleared",
       }))
     );
   }

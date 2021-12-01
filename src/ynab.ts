@@ -1,9 +1,12 @@
 import fetch from "node-fetch";
+import { YNABTransaction } from "./model";
 const getBasicHeaders = () => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${process.env.YNAB_PAT}`,
 });
-export const sendTransactionsToYnab = async (transactions) => {
+export const sendTransactionsToYnab = async (
+  transactions: YNABTransaction[]
+) => {
   const ynabResponse = await (
     await fetch(
       `https://api.youneedabudget.com/v1/budgets/${process.env.YNAB_BUDGET_ID}/transactions`,
@@ -18,7 +21,10 @@ export const sendTransactionsToYnab = async (transactions) => {
   return ynabResponse;
 };
 
-export const getYnabBudgets = async () => {
+type YnabBudgetsResponse = {
+  data: { budgets: Array<{ id: string }> };
+};
+export const getYnabBudgets = async (): Promise<YnabBudgetsResponse> => {
   const ynabResponse = await (
     await fetch(`https://api.youneedabudget.com/v1/budgets`, {
       method: "GET",
@@ -28,10 +34,14 @@ export const getYnabBudgets = async () => {
     })
   ).json();
 
-  return ynabResponse;
+  return ynabResponse as YnabBudgetsResponse;
 };
-
-export const getYnabAccounts = async (budgetId) => {
+type YnabAccountsResponse = {
+  data: { accounts: Array<{ id: string; name: string }> };
+};
+export const getYnabAccounts = async (
+  budgetId: string
+): Promise<YnabAccountsResponse> => {
   const ynabResponse = await (
     await fetch(
       `https://api.youneedabudget.com/v1/budgets/${budgetId}/accounts`,
@@ -42,5 +52,5 @@ export const getYnabAccounts = async (budgetId) => {
     )
   ).json();
 
-  return ynabResponse;
+  return ynabResponse as YnabAccountsResponse;
 };
