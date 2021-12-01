@@ -18,7 +18,7 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "build": "rm -rf dist/ && tsc",
+    "build": "yarn install && rm -rf dist/ && tsc",
     "syncYnab": "yarn build && node -r dotenv/config ./dist/syncYnab.js",
     "listAccounts": "yarn build && node -r dotenv/config ./dist/listAccounts.js",
     "maximizeInterest": "yarn build && node -r dotenv/config ./dist/interestMaximizer.js"
