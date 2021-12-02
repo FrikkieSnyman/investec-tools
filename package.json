@@ -20,6 +20,7 @@
     "postinstall": "yarn build",
     "syncYnab": "node -r dotenv/config ./dist/syncYnab.js",
     "listAccounts": "node -r dotenv/config ./dist/listAccounts.js",
+    "listInvestecAccounts": "node -r dotenv/config ./dist/listInvestecAccounts.js",
     "maximizeInterest": "node -r dotenv/config ./dist/interestMaximizer.js"
   },
   "author": "",

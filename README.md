@@ -1,36 +1,11 @@
-# investec-ynab-sync
+# investec-tools
 
-This is a small script that can be used to keep your Investec accounts in-sycn with your You Need A Budget (YNAB) budget.
+This is a repo with various tools that make use of Investec's Open API.
 
-## Setup
+## [Investec YNAB Sync](docs/YNAB_SYNC.md)
 
-Create a `.env` file that contains the following environment variables:
+This is a small script that can be used to keep your Investec accounts in-sync with your You Need A Budget (YNAB) budget.
 
-```
-INVESTEC_API_ID=xxx
-INVESTEC_API_SECRET=yyy
-YNAB_PAT=zzz
-```
-where `INVESTEC_API_ID` and `INVESTEC_API_SECRET` is your client ID and client secret from Investec's Open API, and `YNAB_PAT` is your Peronal Access Token for your YNAB account.
+## [Investec Interest Maximizer](docs/INTEREST_MAXIMIZER.md)
 
-Next, run `yarn install`.
-
-## Basic usage
-
-### List accounts
-
-Run `yarn listAccounts` to get a list of accounts for both Investec and YNAB. These will be used to add to your `.env` to run the sync script.
-
-### Sync transactions from Investec to YNAB
-
-Add the following to your `.env` file:
-
-```
-YNAB_BUDGET_ID=aaa
-ixxx=aaa-bbb
-iyyy=bbb-ccc
-izzz=ccc-ddd
-```
-where `YNAB_BUDGET_ID` is the id of the budget that you want to keep in sync with Investec, `ixxx`, `iyyy`, `izzz` are the Investec account ID's prepended with "i" and their values are the correlating accounts from YNAB.
-
-You can now run `yarn start` to sync the past 3 days of transactions from Investec with YNAB.
+This is a script that keeps your transactional account at a minimum while putting the rest in your daily calculated savings/loan account.

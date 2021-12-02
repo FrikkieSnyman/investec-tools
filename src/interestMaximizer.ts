@@ -16,6 +16,11 @@ const t = async () => {
   const savingsAccountId = process.env.SAV_ACC_ID;
   const minBalance = +process.env.MIN_BAL;
   const facility = +process.env.FACILITY;
+
+  if (!Number.isFinite(minBalance) || !Number.isFinite(facility)) {
+    console.error("minBalance or facility is not finite numbers");
+    return;
+  }
   console.log("signing in to investec...");
   const client = await Client.create(
     process.env.INVESTEC_API_ID,
