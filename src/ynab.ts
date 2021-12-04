@@ -37,7 +37,9 @@ export const getYnabBudgets = async (): Promise<YnabBudgetsResponse> => {
   return ynabResponse as YnabBudgetsResponse;
 };
 type YnabAccountsResponse = {
-  data: { accounts: Array<{ id: string; name: string }> };
+  data: {
+    accounts: Array<{ id: string; name: string; transfer_payee_id: string }>;
+  };
 };
 export const getYnabAccounts = async (
   budgetId: string

@@ -1,9 +1,29 @@
 import { Client } from "investec-api";
+import { InvestecTransaction } from "investec-api/dist/util/model";
 import { YNABTransaction } from "./model";
-import { sendTransactionsToYnab } from "./ynab";
+import { getYnabAccounts, sendTransactionsToYnab } from "./ynab";
+
+const mapInvestecTransactionToYNABTransaction = (
+  t: InvestecTransaction,
+  payeeId?: string
+): YNABTransaction => ({
+  account_id: process.env[`i${t.accountId}`]!,
+  date: t.transactionDate,
+  amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
+  payee_name: !payeeId ? t.description.slice(0, 50) : undefined,
+  payee_id: payeeId,
+  import_id: `${(t.type === "DEBIT" ? -1 : 1) * t.amount * 1000}:${
+    t.transactionDate
+  }:${t.postedOrder}`,
+  cleared: "cleared" as "cleared",
+});
 
 const sync = async () => {
-  if (!process.env.INVESTEC_API_ID || !process.env.INVESTEC_API_SECRET) {
+  if (
+    !process.env.INVESTEC_API_ID ||
+    !process.env.INVESTEC_API_SECRET ||
+    !process.env.YNAB_BUDGET_ID
+  ) {
     console.error("missing environment variables");
     return;
   }
@@ -21,10 +41,12 @@ const sync = async () => {
     .toISOString()
     .split("T")[0];
 
+  const ynabAccounts = await getYnabAccounts(process.env.YNAB_BUDGET_ID);
+  const transactions: InvestecTransaction[] = [];
   const ynabTransactions: YNABTransaction[] = [];
   for (const acc of accounts) {
     console.log("fetching transactions for account", acc.accountId);
-    const transactions = await acc.getTransactions({
+    const accTransactions = await acc.getTransactions({
       fromDate: twoDaysAgoIsoString,
       toDate: todayIsoString,
     });
@@ -32,20 +54,47 @@ const sync = async () => {
       console.error("missing account from map", { accountId: acc.accountId });
       continue;
     }
-    ynabTransactions.push(
-      ...transactions.map((t) => ({
-        account_id: process.env[`i${acc.accountId}`]!,
-        date: t.transactionDate,
-        amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
-        payee_name: t.description.slice(0, 50),
-        import_id: `${(t.type === "DEBIT" ? -1 : 1) * t.amount * 1000}:${
-          t.transactionDate
-        }:${t.postedOrder}`,
-        cleared: "cleared" as "cleared",
-      }))
-    );
+    transactions.push(...accTransactions);
   }
 
+  const transfers: InvestecTransaction[] = [];
+  transactions
+    .filter((t) => t.type === "DEBIT")
+    .forEach((debit) => {
+      const credit = transactions.find(
+        (ct) =>
+          ct.type === "CREDIT" &&
+          ct.amount === debit.amount &&
+          (ct.description
+            .toLowerCase()
+            .includes(debit.description.toLowerCase()) ||
+            debit.description
+              .toLowerCase()
+              .includes(ct.description.toLowerCase()))
+      );
+      if (!credit) {
+        return;
+      }
+      const ynabAcc = ynabAccounts.data.accounts.find(
+        (a) => a.id === process.env[`i${credit.accountId}`]!
+      );
+      if (!ynabAcc) {
+        return;
+      }
+      transfers.push(debit, credit);
+      ynabTransactions.push(
+        mapInvestecTransactionToYNABTransaction(
+          debit,
+          ynabAcc.transfer_payee_id
+        )
+      );
+    });
+
+  ynabTransactions.push(
+    ...transactions
+      .filter((t) => !transfers.includes(t))
+      .map((t) => mapInvestecTransactionToYNABTransaction(t))
+  );
   if (ynabTransactions.length < 1) {
     console.log("No transactions to send to ynab");
     return;

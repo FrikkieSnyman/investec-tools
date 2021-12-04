@@ -18,13 +18,19 @@ const list = async () => {
   const ynabBudgets = await getYnabBudgets();
 
   console.log("getting ynab accounts");
-  const ynabAccounts: { [key in string]: Array<{ id: string; name: string }> } =
-    {};
+  const ynabAccounts: {
+    [key in string]: Array<{
+      id: string;
+      name: string;
+      transfer_payee_id: string;
+    }>;
+  } = {};
   for (const budget of ynabBudgets.data.budgets) {
     const accounts = await getYnabAccounts(budget.id);
     ynabAccounts[budget.id] = accounts.data.accounts.map((a) => ({
       id: a.id,
       name: a.name,
+      transfer_payee_id: a.transfer_payee_id,
     }));
   }
 
