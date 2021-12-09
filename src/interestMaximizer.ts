@@ -56,7 +56,11 @@ const t = async () => {
     toAccount = transactionalAccount;
     diffFromTarget *= -1;
   }
-  console.log("transferring", { fromAccount, toAccount, diffFromTarget });
+  console.log("transferring", {
+    fromAccount: fromAccount.productName,
+    toAccount: toAccount.productName,
+    diffFromTarget,
+  });
   const timestamp = Date.now();
   const reference = `${timestamp} - auto transfer`;
   const transferResponse = await fromAccount.transfer([
@@ -68,7 +72,9 @@ const t = async () => {
     },
   ]);
 
-  console.log("transfer response", transferResponse);
+  console.log("transfer complete", {
+    transferResponse: transferResponse[0].Status,
+  });
 };
 
 t().then(() => console.log("done"));
