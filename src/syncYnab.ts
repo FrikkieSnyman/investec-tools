@@ -36,8 +36,8 @@ const sync = async () => {
 
   const accounts = await client.getAccounts();
   console.log("got accounts from investec");
-  const todayIsoString = new Date().toISOString().split("T")[0];
-  const twoDaysAgoIsoString = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+  const toIsoString = new Date().toISOString().split("T")[0];
+  const fromIsoString = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0];
 
@@ -47,8 +47,8 @@ const sync = async () => {
   for (const acc of accounts) {
     console.log("fetching transactions for account", acc.accountId);
     const accTransactions = await acc.getTransactions({
-      fromDate: twoDaysAgoIsoString,
-      toDate: todayIsoString,
+      fromDate: fromIsoString,
+      toDate: toIsoString,
     });
     if (!process.env[`i${acc.accountId}`]) {
       console.error("missing account from map", { accountId: acc.accountId });
