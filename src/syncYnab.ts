@@ -9,7 +9,7 @@ const mapInvestecTransactionToYNABTransaction = (
 ): YNABTransaction => ({
   account_id: process.env[`i${t.accountId}`]!,
   date: t.transactionDate,
-  amount: (t.type === "DEBIT" ? -1 : 1) * t.amount * 1000,
+  amount: parseInt(String((t.type === "DEBIT" ? -1 : 1) * t.amount * 1000)),
   payee_name: !payeeId ? t.description.slice(0, 50) : undefined,
   payee_id: payeeId,
   import_id: `${(t.type === "DEBIT" ? -1 : 1) * t.amount * 1000}:${
