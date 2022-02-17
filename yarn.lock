@@ -46,10 +46,10 @@ form-data@^3.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
-investec-api@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/investec-api/-/investec-api-1.0.6.tgz#7dd1a0d6e2bd322ab12c7e6fa15fe320c4ae58df"
-  integrity sha512-GyoiYuXOyD5V5G74PDmv/ounLpGyrVidC4O+cZWIa3nm81lqU45KpoSTRAUF6LUQdU6Bshq92AZ/BKkRQmM0hw==
+investec-api@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/investec-api/-/investec-api-1.0.7.tgz#a6a2359acba86287705cdf399693021b789c003a"
+  integrity sha512-aLdPhwlrgTmwlH07h/18QuTDY3+q5v4kjNHFMiB+is+fI6GVpja4CNWnRBFXaVYvvoVBsA4HHDzUAP+7K48GPA==
   dependencies:
     node-fetch "2"
 
