@@ -4,6 +4,7 @@ const t = async () => {
   if (
     !process.env.INVESTEC_API_ID ||
     !process.env.INVESTEC_API_SECRET ||
+    !process.env.INVESTEC_API_KEY ||
     !process.env.TRANS_ACC_ID ||
     !process.env.SAV_ACC_ID ||
     !process.env.FACILITY ||
@@ -24,7 +25,8 @@ const t = async () => {
   console.log("signing in to investec...");
   const client = await Client.create(
     process.env.INVESTEC_API_ID,
-    process.env.INVESTEC_API_SECRET
+    process.env.INVESTEC_API_SECRET,
+    process.env.INVESTEC_API_KEY
   );
   const accounts = await client.getAccounts();
   const transactionalAccount = accounts.find(

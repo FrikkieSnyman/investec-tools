@@ -1,15 +1,17 @@
 import { Client } from "investec-api";
 
 const list = async () => {
-  if (!process.env.INVESTEC_API_ID || !process.env.INVESTEC_API_SECRET) {
+  if (!process.env.INVESTEC_API_ID || !process.env.INVESTEC_API_SECRET || !process.env.INVESTEC_API_KEY) {
     console.error("missing environment variables");
     return;
   }
   console.log("logging in to investec...");
   const client = await Client.create(
     process.env.INVESTEC_API_ID,
-    process.env.INVESTEC_API_SECRET
+    process.env.INVESTEC_API_SECRET,
+    process.env.INVESTEC_API_KEY
   );
+  console.log(client);
   console.log("getting investec accounts");
   const investecAccounts = await client.getAccounts();
 
