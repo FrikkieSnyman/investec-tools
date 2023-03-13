@@ -10,7 +10,7 @@
     "@types/node": "^16.11.11",
     "@types/node-fetch": "2",
     "dotenv": "^10.0.0",
-    "investec-api": "^1.2.0",
+    "investec-api": "^1.3.0",
     "node-fetch": "2",
     "typescript": "^4.5.2"
   },
@@ -19,6 +19,7 @@
     "postinstall": "yarn build",
     "syncYnab": "node -r dotenv/config ./dist/syncYnab.js",
     "listAccounts": "node -r dotenv/config ./dist/listAccounts.js",
+    "listBeneficiaries": "node -r dotenv/config ./dist/listBeneficiaries.js",
     "listInvestecAccounts": "node -r dotenv/config ./dist/listInvestecAccounts.js",
     "maximizeInterest": "node -r dotenv/config ./dist/interestMaximizer.js"
   },
