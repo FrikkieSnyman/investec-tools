@@ -34,7 +34,18 @@ const beforeTransaction = async (authorization) => {
 };
 
 // This function runs after an approved transaction.
+// NB: in the simulator, only `afterTransaction` is ever called.
+// in prod, `afterDecline` is called.
 const afterTransaction = async (transaction) => {
+  console.log(transaction);
+
+  const result = await getResult(transaction.card.id);
+  if (result === "reject") {
+    await doSurpriseSavings(transaction.centsAmount);
+  }
+};
+
+const afterDecline = async (transaction) => {
   console.log(transaction);
 
   const result = await getResult(transaction.card.id);
