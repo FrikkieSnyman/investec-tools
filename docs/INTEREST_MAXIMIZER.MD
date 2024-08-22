@@ -20,6 +20,7 @@ It requires the following environment variables:
 | Variable              | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
 | `INVESTEC_API_ID`     | Client ID for Investec's Open API                            |
+| `INVESTEC_API_KEY`    | The relevant Client Key for Investec's Open API              |
 | `INVESTEC_API_SECRET` | The relevant Client Secret for Investec's Open API           |
 | `TRANS_ACC_ID`        | The account id of the account used as transactional account  |
 | `SAV_ACC_ID`          | The account id of the account user as savings/loan account   |

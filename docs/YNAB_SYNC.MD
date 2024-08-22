@@ -9,10 +9,11 @@ Create a `.env` file that contains the following environment variables:
 ```
 INVESTEC_API_ID=xxx
 INVESTEC_API_SECRET=yyy
+INVESTEC_API_KEY=zzz
 YNAB_PAT=zzz
 ```
 
-where `INVESTEC_API_ID` and `INVESTEC_API_SECRET` is your client ID and client secret from Investec's Open API, and `YNAB_PAT` is your Peronal Access Token for your YNAB account.
+where `INVESTEC_API_ID`, `INVESTEC_API_SECRET`, `INVESTEC_API_KEY`, is your client ID, client secret and client key from Investec's Open API, and `YNAB_PAT` is your Peronal Access Token for your YNAB account.
 
 Next, run `yarn install`.
 

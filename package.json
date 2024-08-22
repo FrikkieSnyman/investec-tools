@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "investec-tools",
   "version": "1.0.0",
   "description": "",
   "engines": {
@@ -7,11 +7,13 @@
   },
   "main": "main.js",
   "dependencies": {
+    "dotenv": "^10.0.0",
+    "investec-api": "^1.5.0",
+    "node-fetch": "2"
+  },
+  "devDependencies": {
     "@types/node": "^16.11.11",
     "@types/node-fetch": "2",
-    "dotenv": "^10.0.0",
-    "investec-api": "^1.3.0",
-    "node-fetch": "2",
     "typescript": "^4.5.2"
   },
   "scripts": {
