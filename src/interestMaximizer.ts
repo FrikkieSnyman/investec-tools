@@ -41,7 +41,7 @@ const t = async () => {
   const transactionalAccBalance = await transactionalAccount.getBalance();
 
   const trueBalance = transactionalAccBalance.availableBalance - facility; // the availableBalance takes the pending transactions into account
-  let diffFromTarget = trueBalance - minBalance;
+  let diffFromTarget = Number((trueBalance - minBalance).toFixed(2));
 
   let fromAccount, toAccount: Account;
   if (diffFromTarget === 0) {
