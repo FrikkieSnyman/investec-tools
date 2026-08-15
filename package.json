@@ -9,11 +9,10 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "investec-api": "^2.0.0",
-    "node-fetch": "2"
+    "ynab": "^4.5.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.11",
-    "@types/node-fetch": "2",
     "typescript": "^5"
   },
   "scripts": {

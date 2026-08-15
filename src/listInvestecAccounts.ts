@@ -11,7 +11,6 @@ const list = async () => {
     process.env.INVESTEC_API_SECRET,
     process.env.INVESTEC_API_KEY
   );
-  console.log(client);
   console.log("getting investec accounts");
   const investecAccounts = await client.getAccounts();
 
