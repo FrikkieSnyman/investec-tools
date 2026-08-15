@@ -6,7 +6,7 @@ import type {
   SaveTransactionsResponse,
 } from "ynab";
 
-// constructed lazily so dotenv has loaded by the time the token is read
+// constructed lazily so the env file has loaded by the time the token is read
 const api = () => new ynab.API(process.env.YNAB_PAT!);
 
 export const sendTransactionsToYnab = (
