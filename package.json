@@ -3,27 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
+    "node": ">=20.6",
     "yarn": "1.x"
   },
   "main": "main.js",
   "dependencies": {
-    "dotenv": "^10.0.0",
-    "investec-api": "^1.5.0",
-    "node-fetch": "2"
+    "investec-api": "^2.0.0",
+    "ynab": "^4.5.0"
   },
   "devDependencies": {
-    "@types/node": "^16.11.11",
-    "@types/node-fetch": "2",
-    "typescript": "^4.5.2"
+    "@types/node": "^26",
+    "typescript": "^5"
   },
   "scripts": {
     "build": "rm -rf dist/ && tsc",
     "postinstall": "yarn build",
-    "syncYnab": "node -r dotenv/config ./dist/syncYnab.js",
-    "listAccounts": "node -r dotenv/config ./dist/listAccounts.js",
-    "listBeneficiaries": "node -r dotenv/config ./dist/listBeneficiaries.js",
-    "listInvestecAccounts": "node -r dotenv/config ./dist/listInvestecAccounts.js",
-    "maximizeInterest": "node -r dotenv/config ./dist/interestMaximizer.js"
+    "syncYnab": "node --env-file=.env ./dist/syncYnab.js",
+    "listAccounts": "node --env-file=.env ./dist/listAccounts.js",
+    "listBeneficiaries": "node --env-file=.env ./dist/listBeneficiaries.js",
+    "listInvestecAccounts": "node --env-file=.env ./dist/listInvestecAccounts.js",
+    "maximizeInterest": "node --env-file=.env ./dist/interestMaximizer.js"
   },
   "author": "",
   "license": "ISC"

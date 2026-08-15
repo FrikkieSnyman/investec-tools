@@ -1,58 +1,24 @@
-import fetch from "node-fetch";
-import { YNABTransaction } from "./model";
-const getBasicHeaders = () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${process.env.YNAB_PAT}`,
-});
-export const sendTransactionsToYnab = async (
-  transactions: YNABTransaction[]
-) => {
-  const ynabResponse = await (
-    await fetch(
-      `https://api.youneedabudget.com/v1/budgets/${process.env.YNAB_BUDGET_ID}/transactions`,
-      {
-        method: "POST",
-        headers: { ...getBasicHeaders() },
-        body: JSON.stringify({ transactions }),
-      }
-    )
-  ).json();
+import * as ynab from "ynab";
+import type {
+  Account,
+  NewTransaction,
+  PlanSummary,
+  SaveTransactionsResponse,
+} from "ynab";
 
-  return ynabResponse;
-};
+// constructed lazily so the env file has loaded by the time the token is read
+const api = () => new ynab.API(process.env.YNAB_PAT!);
 
-type YnabBudgetsResponse = {
-  data: { budgets: Array<{ id: string }> };
-};
-export const getYnabBudgets = async (): Promise<YnabBudgetsResponse> => {
-  const ynabResponse = await (
-    await fetch(`https://api.youneedabudget.com/v1/budgets`, {
-      method: "GET",
-      headers: {
-        ...getBasicHeaders(),
-      },
-    })
-  ).json();
+export const sendTransactionsToYnab = (
+  transactions: NewTransaction[]
+): Promise<SaveTransactionsResponse> =>
+  api().transactions.createTransactions(process.env.YNAB_BUDGET_ID!, {
+    transactions,
+  });
 
-  return ynabResponse as YnabBudgetsResponse;
-};
-type YnabAccountsResponse = {
-  data: {
-    accounts: Array<{ id: string; name: string; transfer_payee_id: string }>;
-  };
-};
-export const getYnabAccounts = async (
-  budgetId: string
-): Promise<YnabAccountsResponse> => {
-  const ynabResponse = await (
-    await fetch(
-      `https://api.youneedabudget.com/v1/budgets/${budgetId}/accounts`,
-      {
-        method: "GET",
-        headers: { ...getBasicHeaders() },
-      }
-    )
-  ).json();
+// YNAB calls budgets "plans" nowadays; ids are unchanged
+export const getYnabBudgets = async (): Promise<PlanSummary[]> =>
+  (await api().plans.getPlans()).data.plans;
 
-  return ynabResponse as YnabAccountsResponse;
-};
+export const getYnabAccounts = async (budgetId: string): Promise<Account[]> =>
+  (await api().accounts.getAccounts(budgetId)).data.accounts;

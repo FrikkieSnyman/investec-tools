@@ -1,5 +1,5 @@
-import { Client } from "investec-api";
-import { InvestecTransaction } from "investec-api/dist/util/model";
+import { Client, InvestecTransaction } from "investec-api";
+import { TransactionClearedStatus } from "ynab";
 import { YNABTransaction } from "./model";
 import { getYnabAccounts, sendTransactionsToYnab } from "./ynab";
 
@@ -15,7 +15,7 @@ const mapInvestecTransactionToYNABTransaction = (
   import_id: `${(t.type === "DEBIT" ? -1 : 1) * t.amount * 1000}:${
     t.transactionDate
   }:${t.postedOrder}`,
-  cleared: "cleared" as "cleared",
+  cleared: TransactionClearedStatus.Cleared,
 });
 
 const sync = async () => {
@@ -77,7 +77,7 @@ const sync = async () => {
       if (!credit) {
         return;
       }
-      const ynabAcc = ynabAccounts.data.accounts.find(
+      const ynabAcc = ynabAccounts.find(
         (a) => a.id === process.env[`i${credit.accountId}`]!
       );
       if (!ynabAcc) {

@@ -26,9 +26,9 @@ const list = async () => {
       transfer_payee_id: string;
     }>;
   } = {};
-  for (const budget of ynabBudgets.data.budgets) {
+  for (const budget of ynabBudgets) {
     const accounts = await getYnabAccounts(budget.id);
-    ynabAccounts[budget.id] = accounts.data.accounts.map((a) => ({
+    ynabAccounts[budget.id] = accounts.map((a) => ({
       id: a.id,
       name: a.name,
       transfer_payee_id: a.transfer_payee_id,
