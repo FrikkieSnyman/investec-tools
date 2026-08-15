@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
+    "node": ">=18",
     "yarn": "1.x"
   },
   "main": "main.js",
